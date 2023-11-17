@@ -7,16 +7,18 @@
 #define SHAPE_WAR_PLAYER_H
 
 struct Player {
-    Vector2 v1, v2, v3;
-    void (*action) (struct Player *); // Responds to input from user (shooting function, rotate function etc.)
+    Vector2 v1, v2, v3, position;
+    float rotation, speed, rotationSpeed;
 };
 
 typedef struct Player Player;
+extern const int screenWidth;
+extern const int screenHeight;
 
 void InitPlayer(Player *);
 void DrawPlayer(Player *);
 void InputPlayer(Player *);
-void RotatePlayer(Player *);
+void MovePlayer(Player *);
 void Shoot(Player *);
 
 #endif //SHAPE_WAR_PLAYER_H

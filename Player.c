@@ -1,17 +1,52 @@
 //
 // Created by allan on 27/09/23.
 //
-
+#include <math.h>
 #include "Player.h"
 
 void InitPlayer(Player* player) {
-    player->v1 = (Vector2){800 / 2.0f, 600 / 2.0f - 15.0f};
-    player->v2 = (Vector2){800 / 2.0f - 20.0f, 600 / 2.0f + 20.0f};
-    player->v3 = (Vector2){800 / 2.0f + 20.0f, 600 / 2.0f + 20.0f};
+    /*player->v1 = (Vector2){(float)screenWidth / 2.0f, (float)screenHeight / 2.0f - 15.0f};
+    player->v2 = (Vector2){(float)screenWidth / 2.0f - 20.0f, (float)screenHeight / 2.0f + 20.0f};
+    player->v3 = (Vector2){(float)screenWidth / 2.0f + 20.0f, (float)screenHeight / 2.0f + 20.0f};*/
+
+    // Define initial triangle coordinates
+    player->position = (Vector2){ screenWidth / 2.0f, screenHeight / 2.0f };
+    player->rotation = 0.0f;
+    player->speed = 5.0f; // Movement speed
+    player->rotationSpeed = 2.0f; // Rotation speed in degrees
+
+    // Define initial triangle coordinates
+    player->v1 = (Vector2){player->position.x, player->position.y - 15.0f};
+    player->v2 = (Vector2){player->position.x - 20.0f, player->position.y + 15.0f};
+    player->v3 = (Vector2){player->position.x + 20.0f, player->position.y + 15.0f};
 }
 
+void MovePlayer(Player* player) {
+    Vector2 v1 = (Vector2){ player->position.x, player->position.y - 15.0f };
+    Vector2 v2 = (Vector2){ player->position.x - 20.0f, player->position.y + 15.0f };
+    Vector2 v3 = (Vector2){ player->position.x + 20.0f, player->position.y + 15.0f };
 
-void RotatePlayer(Player* player) {}
+    // Rotate each vertex around the center
+    v1 = (Vector2){
+            player->position.x + (v1.x - player->position.x) * cosf(player->rotation * DEG2RAD) - (v1.y - player->position.y) * sinf(player->rotation * DEG2RAD),
+            player->position.y + (v1.x - player->position.x) * sinf(player->rotation * DEG2RAD) + (v1.y - player->position.y) * cosf(player->rotation * DEG2RAD)
+    };
+
+    v2 = (Vector2){
+            player->position.x + (v2.x - player->position.x) * cosf(player->rotation * DEG2RAD) - (v2.y - player->position.y) * sinf(player->rotation * DEG2RAD),
+            player->position.y + (v2.x - player->position.x) * sinf(player->rotation * DEG2RAD) + (v2.y - player->position.y) * cosf(player->rotation * DEG2RAD)
+    };
+
+    v3 = (Vector2){
+            player->position.x + (v3.x - player->position.x) * cosf(player->rotation * DEG2RAD) - (v3.y - player->position.y) * sinf(player->rotation * DEG2RAD),
+            player->position.y + (v3.x - player->position.x) * sinf(player->rotation * DEG2RAD) + (v3.y - player->position.y) * cosf(player->rotation * DEG2RAD)
+    };
+
+    player->v1 = v1;
+    player->v2 = v2;
+    player->v3 = v3;
+}
+
 void Shoot(Player* player) {}
 
 void DrawPlayer(Player* player) {
@@ -19,19 +54,25 @@ void DrawPlayer(Player* player) {
 }
 
 void InputPlayer(Player* player) {
+    Vector2 direction = { sinf(player->rotation * DEG2RAD), -cosf(player->rotation * DEG2RAD) };
+
     if (IsKeyDown(KEY_RIGHT)) {
-        player->v1.x += 5.0f;
-        player->v2.x += 5.0f;
-        player->v3.x += 5.0f;
+        player->rotation += player->rotationSpeed;
+        MovePlayer(player);
     }
 
     if (IsKeyDown(KEY_LEFT)) {
-        player->v1.x -= 5.0f;
-        player->v2.x -= 5.0f;
-        player->v3.x -= 5.0f;
+        player->rotation -= player->rotationSpeed;
+        MovePlayer(player);
     }
 
     if (IsKeyDown(KEY_SPACE)) {
         // Shoot
+    }
+
+    if (IsKeyDown(KEY_UP)) {
+        player->position.x += direction.x * player->speed;
+        player->position.y += direction.y * player->speed;
+        MovePlayer(player);
     }
 }
