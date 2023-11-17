@@ -1,16 +1,20 @@
 #include "raylib.h"
-
+#include "Player.h"
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
+
+const int screenWidth = 800;
+const int screenHeight = 600;
+
 int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 500;
+    Player player;
 
     InitWindow(screenWidth, screenHeight, "Shape War");
+    InitPlayer(&player);
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -19,9 +23,7 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
-        //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
-        //----------------------------------------------------------------------------------
+        InputPlayer(&player);
 
         // Draw
         //----------------------------------------------------------------------------------
@@ -29,7 +31,7 @@ int main(void)
 
         ClearBackground(BLACK);
 
-        // Draw things
+        DrawPlayer(&player);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
