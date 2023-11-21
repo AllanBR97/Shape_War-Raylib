@@ -1,19 +1,29 @@
 #include "raylib.h"
 #include "Player.h"
-#include <math.h>
+
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 
 const int screenWidth = 800;
 const int screenHeight = 600;
+Player player;
+
+void update() {
+    InputPlayer(&player);
+}
+
+void draw() {
+    BeginDrawing();
+    ClearBackground(BLACK);
+    DrawPlayer(&player);
+    EndDrawing();
+}
 
 int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    Player player;
-
     InitWindow(screenWidth, screenHeight, "Shape War");
     InitPlayer(&player);
 
@@ -24,17 +34,11 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
-        InputPlayer(&player);
+        update();
 
         // Draw
         //----------------------------------------------------------------------------------
-        BeginDrawing();
-
-        ClearBackground(BLACK);
-
-        DrawPlayer(&player);
-
-        EndDrawing();
+        draw();
         //----------------------------------------------------------------------------------
     }
 

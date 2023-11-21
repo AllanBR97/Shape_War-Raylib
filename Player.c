@@ -2,20 +2,18 @@
 // Created by allan on 27/09/23.
 //
 #include <math.h>
+#include <stdio.h>
 #include "Player.h"
 
-void InitPlayer(Player* player) {
-    /*player->v1 = (Vector2){(float)screenWidth / 2.0f, (float)screenHeight / 2.0f - 15.0f};
-    player->v2 = (Vector2){(float)screenWidth / 2.0f - 20.0f, (float)screenHeight / 2.0f + 20.0f};
-    player->v3 = (Vector2){(float)screenWidth / 2.0f + 20.0f, (float)screenHeight / 2.0f + 20.0f};*/
+bool keepDirection = false;
 
-    // Define initial triangle coordinates
-    player->position = (Vector2){ screenWidth / 2.0f, screenHeight / 2.0f };
+void InitPlayer(Player* player) {
+    // Setup player
+    player->position = (Vector2){ (float)screenWidth / 2.0f, (float)screenHeight / 2.0f };
     player->rotation = 0.0f;
-    player->speed = 5.0f; // Movement speed
+    player->speed = 3.0f; // Movement speed
     player->rotationSpeed = 2.0f; // Rotation speed in degrees
 
-    // Define initial triangle coordinates
     player->v1 = (Vector2){player->position.x, player->position.y - 15.0f};
     player->v2 = (Vector2){player->position.x - 20.0f, player->position.y + 15.0f};
     player->v3 = (Vector2){player->position.x + 20.0f, player->position.y + 15.0f};
@@ -47,7 +45,7 @@ void MovePlayer(Player* player) {
     player->v3 = v3;
 }
 
-void Shoot(Player* player) {}
+void Shoot() {}
 
 void DrawPlayer(Player* player) {
     DrawTriangleLines(player->v1, player->v2, player->v3, RAYWHITE);
@@ -71,6 +69,14 @@ void InputPlayer(Player* player) {
     }
 
     if (IsKeyDown(KEY_UP)) {
+        keepDirection = true;
+
+        if (player->position.x > (float)screenWidth || player->position.y > (float)screenHeight) {
+            puts("WRAP!!!");
+        }
+    }
+
+    if (keepDirection) {
         player->position.x += direction.x * player->speed;
         player->position.y += direction.y * player->speed;
         MovePlayer(player);
