@@ -2,17 +2,16 @@
 // Created by allan on 27/09/23.
 //
 #include <math.h>
-#include <stdio.h>
-#include "Player.h"
+//#include <stdio.h>
+#include "Game.h"
 
-bool keepDirection = false;
+#define PLAYER_SPEED 3.0f
+#define ROTATION_SPEED 5.0f
 
 void InitPlayer(Player* player) {
     // Setup player
     player->position = (Vector2){ (float)screenWidth / 2.0f, (float)screenHeight / 2.0f };
     player->rotation = 0.0f;
-    player->speed = 3.0f; // Movement speed
-    player->rotationSpeed = 2.0f; // Rotation speed in degrees
 
     player->v1 = (Vector2){player->position.x, player->position.y - 15.0f};
     player->v2 = (Vector2){player->position.x - 20.0f, player->position.y + 15.0f};
@@ -51,17 +50,35 @@ void DrawPlayer(Player* player) {
     DrawTriangleLines(player->v1, player->v2, player->v3, RAYWHITE);
 }
 
+void WrapScreen(Player* player) {
+    // Check if player is beyond the right edge
+    if (player->position.x > (float)screenWidth) {
+        player->position.x = 0;
+    }
+        // Check if player is beyond the left edge
+    else if (player->position.x < 0) {
+        player->position.x = (float)screenWidth;
+    }
+
+    // Check if player is beyond the bottom edge
+    if (player->position.y > (float)screenHeight) {
+        player->position.y = 0;
+    }
+        // Check if player is beyond the top edge
+    else if (player->position.y < 0) {
+        player->position.y = (float)screenHeight;
+    }
+}
+
 void InputPlayer(Player* player) {
     Vector2 direction = { sinf(player->rotation * DEG2RAD), -cosf(player->rotation * DEG2RAD) };
 
     if (IsKeyDown(KEY_RIGHT)) {
-        player->rotation += player->rotationSpeed;
-        MovePlayer(player);
+        player->rotation += ROTATION_SPEED;
     }
 
     if (IsKeyDown(KEY_LEFT)) {
-        player->rotation -= player->rotationSpeed;
-        MovePlayer(player);
+        player->rotation -= ROTATION_SPEED;
     }
 
     if (IsKeyDown(KEY_SPACE)) {
@@ -69,16 +86,21 @@ void InputPlayer(Player* player) {
     }
 
     if (IsKeyDown(KEY_UP)) {
-        keepDirection = true;
-
-        if (player->position.x > (float)screenWidth || player->position.y > (float)screenHeight) {
-            puts("WRAP!!!");
-        }
+        gameStarted = true;
     }
 
-    if (keepDirection) {
-        player->position.x += direction.x * player->speed;
-        player->position.y += direction.y * player->speed;
-        MovePlayer(player);
+    if (gameStarted) {
+        player->position.x += direction.x * PLAYER_SPEED;
+        player->position.y += direction.y * PLAYER_SPEED;
     }
+
+    MovePlayer(player);
+    WrapScreen(player);
+}
+
+void DrawBullet(Player* player) {
+    Vector2 pos = player->v1;
+    Vector2 direction = { sinf(player->rotation * DEG2RAD), -cosf(player->rotation * DEG2RAD) };
+    Vector2 endPos = { pos.x + direction.x * 10, pos.y + direction.y * 10 };
+    DrawLineEx(pos, endPos, 1, RAYWHITE);
 }

@@ -1,12 +1,10 @@
-#include "raylib.h"
-#include "Player.h"
-
-//------------------------------------------------------------------------------------
-// Program main entry point
-//------------------------------------------------------------------------------------
+#include "Game.h"
 
 const int screenWidth = 800;
 const int screenHeight = 600;
+__attribute__((unused)) const int maxShoot = 3;
+
+bool gameStarted = false;
 Player player;
 
 void update() {
@@ -17,6 +15,7 @@ void draw() {
     BeginDrawing();
     ClearBackground(BLACK);
     DrawPlayer(&player);
+    DrawBullet(&player);
     EndDrawing();
 }
 
