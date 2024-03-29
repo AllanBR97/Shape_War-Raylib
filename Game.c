@@ -1,12 +1,11 @@
 //
 // Created by allan on 27/09/23.
 //
-#include <math.h>
-//#include <stdio.h>
 #include "Game.h"
 
 #define PLAYER_SPEED 3.0f
-#define ROTATION_SPEED 5.0f
+#define ROTATION_SPEED 3.0f
+#define BULLET_SPEED 6.f
 
 void InitPlayer(Player* player) {
     // Setup player
@@ -16,9 +15,13 @@ void InitPlayer(Player* player) {
     player->v1 = (Vector2){player->position.x, player->position.y - 15.0f};
     player->v2 = (Vector2){player->position.x - 20.0f, player->position.y + 15.0f};
     player->v3 = (Vector2){player->position.x + 20.0f, player->position.y + 15.0f};
+
+    for (int i = 0; i < 3; ++i) {
+        player->bullets[i].position = (Vector2){-100, -100};
+    }
 }
 
-void MovePlayer(Player* player) {
+void RotatePlayer(Player* player) {
     Vector2 v1 = (Vector2){ player->position.x, player->position.y - 15.0f };
     Vector2 v2 = (Vector2){ player->position.x - 20.0f, player->position.y + 15.0f };
     Vector2 v3 = (Vector2){ player->position.x + 20.0f, player->position.y + 15.0f };
@@ -44,9 +47,16 @@ void MovePlayer(Player* player) {
     player->v3 = v3;
 }
 
-void Shoot() {}
+void Shoot(Player* player) {
+    Vector2 direction = GetPlayerDir(player);
+    player->bullets[0].active = true;
+    player->bullets[0] = (Bullet){ player->v1,
+                                   direction,
+                                   true,
+                                   player->rotation};
+}
 
-void DrawPlayer(Player* player) {
+void DrawPlayer(const Player* player) {
     DrawTriangleLines(player->v1, player->v2, player->v3, RAYWHITE);
 }
 
@@ -71,21 +81,21 @@ void WrapScreen(Player* player) {
 }
 
 void InputPlayer(Player* player) {
-    Vector2 direction = { sinf(player->rotation * DEG2RAD), -cosf(player->rotation * DEG2RAD) };
+    Vector2 direction = GetPlayerDir(player);
 
     if (IsKeyDown(KEY_RIGHT)) {
         player->rotation += ROTATION_SPEED;
     }
 
-    if (IsKeyDown(KEY_LEFT)) {
+    else if (IsKeyDown(KEY_LEFT)) {
         player->rotation -= ROTATION_SPEED;
     }
 
     if (IsKeyDown(KEY_SPACE)) {
-        // Shoot
+        Shoot(player);
     }
 
-    if (IsKeyDown(KEY_UP)) {
+    else if (IsKeyDown(KEY_UP)) {
         gameStarted = true;
     }
 
@@ -94,13 +104,35 @@ void InputPlayer(Player* player) {
         player->position.y += direction.y * PLAYER_SPEED;
     }
 
-    MovePlayer(player);
-    WrapScreen(player);
+    RotatePlayer(player);
 }
 
 void DrawBullet(Player* player) {
-    Vector2 pos = player->v1;
-    Vector2 direction = { sinf(player->rotation * DEG2RAD), -cosf(player->rotation * DEG2RAD) };
-    Vector2 endPos = { pos.x + direction.x * 10, pos.y + direction.y * 10 };
-    DrawLineEx(pos, endPos, 1, RAYWHITE);
+    for (int i = 0; i < 3; i++) {
+        if (player->bullets[i].active) {
+            DrawCircle((int)player->bullets[i].position.x, (int)player->bullets[i].position.y, 3, BLUE);
+        }
+    }
+}
+
+inline Vector2 GetPlayerDir(const Player* player) {
+    return (Vector2){ sinf(player->rotation * DEG2RAD), -cosf(player->rotation * DEG2RAD) };
+}
+
+void UpdateBullet(Player* player) {
+    for (int i = 0; i < 3; i++) {
+        Bullet *bullet = &player->bullets[i];
+
+        if (bullet->active) {
+            // Atualiza a posição da bala com base na velocidade e direção
+            bullet->position.x += BULLET_SPEED * bullet->direction.x;
+            bullet->position.y += BULLET_SPEED * bullet->direction.y;
+
+            // Verifica se a bala saiu da tela, se sim, desativa
+            if ((int)bullet->position.x > screenWidth || (int)bullet->position.y > screenHeight ||
+                bullet->position.x < 0 || bullet->position.y < 0) {
+                bullet->active = false;
+            }
+        }
+    }
 }

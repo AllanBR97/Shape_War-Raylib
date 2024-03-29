@@ -2,12 +2,13 @@
 
 const int screenWidth = 800;
 const int screenHeight = 600;
-__attribute__((unused)) const int maxShoot = 3;
 
 bool gameStarted = false;
 Player player;
 
 void update() {
+    UpdateBullet(&player);
+    WrapScreen(&player);
     InputPlayer(&player);
 }
 
@@ -19,8 +20,7 @@ void draw() {
     EndDrawing();
 }
 
-int main(void)
-{
+int main(void) {
     // Initialization
     //--------------------------------------------------------------------------------------
     InitWindow(screenWidth, screenHeight, "Shape War");
@@ -30,8 +30,7 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
+    while (!WindowShouldClose()) {
         // Update
         update();
 
