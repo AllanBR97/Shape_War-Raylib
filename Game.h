@@ -8,9 +8,13 @@
 #define SHAPE_WAR_GAME_H
 
 typedef struct {
-    Vector2 position, direction;//, endPos;
+    Vector2 position, direction;
+    float radius;
+}Meteor;
+
+typedef struct {
+    Vector2 position, direction;
     bool active;
-    float rotation;
 }Bullet;
 
 typedef struct {
@@ -33,4 +37,8 @@ void Shoot(Player *);
 
 void UpdateBullet(Player *);
 void DrawBullet(Player *);
+
+void InitMeteor(Meteor *);
+void DrawMeteor(const Meteor *);
+void UpdateMeteor(Meteor *);
 #endif //SHAPE_WAR_GAME_H

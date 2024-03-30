@@ -3,8 +3,5 @@ project(Shape_War C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(Shape_War main.c
-        Game.c
-        Game.h
-)
-target_link_libraries(Shape_War /usr/local/lib/libraylib.a m)
+add_executable(Shape_War main.c Game.c)
+target_link_libraries(Shape_War raylib m)

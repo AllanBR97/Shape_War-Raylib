@@ -6,6 +6,7 @@
 #define PLAYER_SPEED 3.0f
 #define ROTATION_SPEED 3.0f
 #define BULLET_SPEED 6.f
+#define METEOR_SPEED 3.f
 
 void InitPlayer(Player* player) {
     // Setup player
@@ -52,12 +53,11 @@ void Shoot(Player* player) {
     player->bullets[0].active = true;
     player->bullets[0] = (Bullet){ player->v1,
                                    direction,
-                                   true,
-                                   player->rotation};
+                                   true};
 }
 
 void DrawPlayer(const Player* player) {
-    DrawTriangleLines(player->v1, player->v2, player->v3, RAYWHITE);
+    DrawTriangleLines(player->v1, player->v2, player->v3, YELLOW);
 }
 
 void WrapScreen(Player* player) {
@@ -135,4 +135,19 @@ void UpdateBullet(Player* player) {
             }
         }
     }
+}
+
+void InitMeteor(Meteor* meteor) {
+    meteor->position = (Vector2) {300, 300};
+    meteor->radius = 50;
+    meteor->direction = (Vector2) {0.5f, 0.5f};
+}
+
+void DrawMeteor(const Meteor* meteor) {
+    DrawCircle((int)meteor->position.x, (int)meteor->position.y, meteor->radius, BROWN);
+}
+
+void UpdateMeteor(Meteor* meteor) {
+    meteor->position.x += METEOR_SPEED * meteor->direction.x;
+    meteor->position.y += METEOR_SPEED * meteor->direction.y;
 }
