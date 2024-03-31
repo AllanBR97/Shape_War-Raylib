@@ -1,8 +1,5 @@
 #include "Game.h"
 
-const int screenWidth = 800;
-const int screenHeight = 800;
-
 bool gameStarted = false;
 Player player;
 Meteor meteor;
@@ -10,7 +7,7 @@ Meteor meteor;
 void update() {
     UpdateBullet(&player);
     UpdateMeteor(&meteor);
-    WrapScreen(&player);
+    WrapScreen(&player, &meteor);
     InputPlayer(&player);
 }
 
@@ -30,7 +27,7 @@ void SetupGame() {
 
 int main(void) {
     // Initialization
-    InitWindow(screenWidth, screenHeight, "Shape War");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Shape War");
     SetupGame();
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
