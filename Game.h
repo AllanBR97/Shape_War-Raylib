@@ -34,6 +34,8 @@ typedef struct {
 
 extern bool gameStarted;
 
+void DrawGamePause();
+
 Vector2 GetPlayerDir(const Player *);
 void InitPlayer(Player *);
 void DrawPlayer(const Player *);

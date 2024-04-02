@@ -1,12 +1,13 @@
 #include "Game.h"
 
-bool gameStarted = false;
+bool gameStarted;
 Player player;
 Meteor meteor;
 
 void update() {
     UpdateBullet(&player);
     UpdateMeteor(&meteor);
+    RotatePlayer(&player);
     WrapScreen(&player, &meteor);
     InputPlayer(&player);
 }
@@ -17,10 +18,12 @@ void draw() {
     DrawPlayer(&player);
     DrawBullet(&player);
     DrawMeteor(&meteor);
+    DrawGamePause();
     EndDrawing();
 }
 
 void SetupGame() {
+    gameStarted = true;
     InitPlayer(&player);
     InitMeteor(&meteor);
 }

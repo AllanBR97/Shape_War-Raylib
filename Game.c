@@ -3,6 +3,8 @@
 //
 #include "Game.h"
 
+int countBullets = 0;
+
 void InitPlayer(Player* player) {
     // Setup player
     player->position = (Vector2){ (float)SCREEN_WIDTH / 2.0f, (float)SCREEN_HEIGHT / 2.0f };
@@ -42,6 +44,12 @@ void RotatePlayer(Player* player) {
     player->v1 = v1;
     player->v2 = v2;
     player->v3 = v3;
+
+    Vector2 direction = GetPlayerDir(player);
+    if (gameStarted) {
+        player->position.x += direction.x * PLAYER_SPEED;
+        player->position.y += direction.y * PLAYER_SPEED;
+    }
 }
 
 void Shoot(Player* player) {
@@ -51,6 +59,7 @@ void Shoot(Player* player) {
                                        direction,
                                        true};
     }
+    countBullets = countBullets > 3 ? 0 : countBullets + 1;
 }
 
 void DrawPlayer(const Player* player) {
@@ -98,43 +107,36 @@ void WrapScreen(Player* player, Meteor* meteor) {
         meteor->position.y = -meteorHalfHeight;
     }
         // Check if meteor is beyond the top edge
-    else if (meteor->position.y < -meteorHalfHeight) {
+    else if (meteor->position.y < 0 - meteorHalfHeight) {
         meteor->position.y = SCREEN_HEIGHT + meteorHalfHeight;
     }
 }
 
 
 void InputPlayer(Player* player) {
-    Vector2 direction = GetPlayerDir(player);
-
-    if (IsKeyDown(KEY_RIGHT)) {
-        player->rotation += ROTATION_SPEED;
-    }
-
-    else if (IsKeyDown(KEY_LEFT)) {
-        player->rotation -= ROTATION_SPEED;
-    }
-
-    if (IsKeyDown(KEY_SPACE)) {
-        Shoot(player);
-    }
-
-    else if (IsKeyDown(KEY_UP)) {
-        gameStarted = true;
-    }
+    if (IsKeyDown(KEY_UP)) gameStarted = true;
 
     if (gameStarted) {
-        player->position.x += direction.x * PLAYER_SPEED;
-        player->position.y += direction.y * PLAYER_SPEED;
-    }
+        if (IsKeyDown(KEY_RIGHT)) {
+            player->rotation += ROTATION_SPEED;
+        }
 
-    RotatePlayer(player);
+        else if (IsKeyDown(KEY_LEFT)) {
+            player->rotation -= ROTATION_SPEED;
+        }
+
+        if (IsKeyDown(KEY_SPACE)) {
+            Shoot(player);
+        }
+
+        if (IsKeyDown(KEY_P)) gameStarted = false;
+    }
 }
 
 void DrawBullet(Player* player) {
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (player->bullets[i].active) {
-            DrawCircleV((Vector2) {player->bullets[i].position.x, player->bullets[i].position.y}, 3, BLUE);
+            DrawCircleV(player->bullets[i].position, 3, BLUE);
         }
     }
 }
@@ -144,6 +146,8 @@ inline Vector2 GetPlayerDir(const Player* player) {
 }
 
 void UpdateBullet(Player* player) {
+    if (!gameStarted) return;
+
     for (int i = 0; i < MAX_BULLETS; i++) {
         Bullet *bullet = &player->bullets[i];
 
@@ -153,7 +157,7 @@ void UpdateBullet(Player* player) {
             bullet->position.y += BULLET_SPEED * bullet->direction.y;
 
             // Verifica se a bala saiu da tela, se sim, desativa
-            if ((int)bullet->position.x > SCREEN_WIDTH || (int)bullet->position.y > SCREEN_HEIGHT ||
+            if (bullet->position.x > SCREEN_WIDTH || bullet->position.y > SCREEN_HEIGHT ||
                 bullet->position.x < 0 || bullet->position.y < 0) {
                 bullet->active = false;
             }
@@ -168,12 +172,18 @@ void InitMeteor(Meteor* meteor) {
 }
 
 void DrawMeteor(const Meteor* meteor) {
-    DrawCircle((int)meteor->position.x, (int)meteor->position.y, meteor->radius, BROWN);
+    DrawCircleV(meteor->position, meteor->radius, BROWN);
 }
 
 void UpdateMeteor(Meteor* meteor) {
-    if (gameStarted) {
-        meteor->position.x += METEOR_SPEED * meteor->direction.x;
-        meteor->position.y += METEOR_SPEED * meteor->direction.y;
+    if (!gameStarted) return;
+
+    meteor->position.x += METEOR_SPEED * meteor->direction.x;
+    meteor->position.y += METEOR_SPEED * meteor->direction.y;
+}
+
+void DrawGamePause() {
+    if (!gameStarted) {
+        DrawText("PRESS UP TO START", SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2, 30, RED);
     }
 }
