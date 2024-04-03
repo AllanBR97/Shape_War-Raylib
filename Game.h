@@ -32,22 +32,21 @@ typedef struct {
     Bullet bullets[3];
 }Player;
 
-extern bool gameStarted;
-
+void SetupGame();
 void DrawGamePause();
 
-Vector2 GetPlayerDir(const Player *);
-void InitPlayer(Player *);
-void DrawPlayer(const Player *);
-void WrapScreen(Player *, Meteor *);
-void InputPlayer(Player *);
-void RotatePlayer(Player *);
-void Shoot(Player *);
+Vector2 GetPlayerDir();
+void InitPlayer();
+void DrawPlayer();
+void ScreenWrap();
+void InputPlayer();
+void RotatePlayer();
+void Shoot();
 
-void UpdateBullet(Player *);
-void DrawBullet(Player *);
+void UpdateBullet();
+void DrawBullet();
 
-void InitMeteor(Meteor *);
-void DrawMeteor(const Meteor *);
-void UpdateMeteor(Meteor *);
+void InitMeteor();
+void DrawMeteor();
+void UpdateMeteor();
 #endif //SHAPE_WAR_GAME_H

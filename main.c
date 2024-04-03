@@ -1,31 +1,21 @@
 #include "Game.h"
 
-bool gameStarted;
-Player player;
-Meteor meteor;
-
 void update() {
-    UpdateBullet(&player);
-    UpdateMeteor(&meteor);
-    RotatePlayer(&player);
-    WrapScreen(&player, &meteor);
-    InputPlayer(&player);
+    UpdateBullet();
+    UpdateMeteor();
+    RotatePlayer();
+    ScreenWrap();
+    InputPlayer();
 }
 
 void draw() {
     BeginDrawing();
     ClearBackground(BLACK);
-    DrawPlayer(&player);
-    DrawBullet(&player);
-    DrawMeteor(&meteor);
+    DrawPlayer();
+    DrawBullet();
+    DrawMeteor();
     DrawGamePause();
     EndDrawing();
-}
-
-void SetupGame() {
-    gameStarted = true;
-    InitPlayer(&player);
-    InitMeteor(&meteor);
 }
 
 int main(void) {
