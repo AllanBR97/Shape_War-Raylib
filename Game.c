@@ -3,11 +3,11 @@
 //
 #include "Game.h"
 
-int countBullets = 0;
+int indexBullet = 0;
 
 bool gameStarted;
 Player p;
-Meteor meteor;
+Meteor meteor[BIG_METEORS];
 
 void SetupGame() {
     gameStarted = true;
@@ -17,8 +17,8 @@ void SetupGame() {
 
 void InitPlayer() {
     // Setup player
-    p.position = (Vector2){ (float)SCREEN_WIDTH / 2.0f, (float)SCREEN_HEIGHT / 2.0f };
-    p.rotation = 0.0f;
+    p.position = (Vector2){ SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f };
+    p.rotation = 0.f;
 
     p.v1 = (Vector2){p.position.x, p.position.y - 20.0f};
     p.v2 = (Vector2){p.position.x - 20.0f, p.position.y + 20.0f};
@@ -29,6 +29,17 @@ void InitPlayer() {
         p.bullets[i].position = (Vector2){-100, -100};
     }
 }
+
+/*bool CheckCollisionMeteor() {
+    Vector2 offset1 = {p.v1.x - meteor.radius, p.v1.y - meteor.radius};
+    Vector2 offset2 = {p.v2.x - meteor.radius, p.v2.y - meteor.radius};
+    Vector2 offset3 = {p.v3.x - meteor.radius, p.v3.y - meteor.radius};
+
+    if (sqrtf(offset1.x * offset1.x + offset1.y * offset1.y) <= meteor.radius &&
+            sqrtf(offset2.x * offset2.x + offset2.y * offset2.y) <= meteor.radius &&
+            sqrtf(offset3.x * offset3.x + offset3.y * offset3.y) <= meteor.radius) return true;
+    return false;
+}*/
 
 void RotatePlayer() {
     Vector2 v1 = (Vector2){ p.position.x, p.position.y - 20.0f };
@@ -64,10 +75,8 @@ void RotatePlayer() {
 
 void Shoot() {
     Vector2 direction = GetPlayerDir();
-    for (int i = 0; i < MAX_BULLETS; ++i) {
-        p.bullets[i] = (Bullet){p.v1, direction,true};
-    }
-    countBullets = countBullets > 3 ? 0 : countBullets + 1;
+    p.bullets[indexBullet] = (Bullet){p.v1, direction,true};
+    indexBullet = indexBullet < MAX_BULLETS - 1 ? indexBullet + 1 : 0;
 }
 
 void DrawPlayer() {
@@ -78,10 +87,13 @@ void ScreenWrap() {
     // Verifica o tamanho do jogador
     float playerHalfWidth = 20;
     float playerHalfHeight = 20;
+    float meteorHalfWidth, meteorHalfHeight;
 
     // Verifica o tamanho do meteoro
-    float meteorHalfWidth = meteor.radius;
-    float meteorHalfHeight = meteor.radius;
+    for (int i = 0; i < BIG_METEORS; ++i) {
+        meteorHalfWidth = meteor[i].radius;
+        meteorHalfHeight = meteor[i].radius;
+    }
 
     // Check if player is beyond the right edge
     if (p.position.x > SCREEN_WIDTH + playerHalfWidth) {
@@ -101,22 +113,23 @@ void ScreenWrap() {
         p.position.y = SCREEN_HEIGHT + playerHalfHeight;
     }
 
-    // Check if meteor is beyond the right edge
-    if (meteor.position.x > SCREEN_WIDTH + meteorHalfWidth) {
-        meteor.position.x = -meteorHalfWidth;
-    }
-        // Check if meteor is beyond the left edge
-    else if (meteor.position.x < -meteorHalfWidth) {
-        meteor.position.x = SCREEN_WIDTH + meteorHalfWidth;
-    }
-
-    // Check if meteor is beyond the bottom edge
-    if (meteor.position.y > SCREEN_HEIGHT + meteorHalfHeight) {
-        meteor.position.y = -meteorHalfHeight;
-    }
-        // Check if meteor is beyond the top edge
-    else if (meteor.position.y < 0 - meteorHalfHeight) {
-        meteor.position.y = SCREEN_HEIGHT + meteorHalfHeight;
+    for (int i = 0; i < BIG_METEORS; ++i) {
+        // Check if meteor is beyond the right edge
+        if (meteor[i].position.x > SCREEN_WIDTH + meteorHalfWidth) {
+            meteor[i].position.x = -meteorHalfWidth;
+        }
+            // Check if meteor is beyond the left edge
+        else if (meteor[i].position.x < -meteorHalfWidth) {
+            meteor[i].position.x = SCREEN_WIDTH + meteorHalfWidth;
+        }
+        // Check if meteor is beyond the bottom edge
+        if (meteor[i].position.y > SCREEN_HEIGHT + meteorHalfHeight) {
+            meteor[i].position.y = -meteorHalfHeight;
+        }
+            // Check if meteor is beyond the top edge
+        else if (meteor[i].position.y < 0 - meteorHalfHeight) {
+            meteor[i].position.y = SCREEN_HEIGHT + meteorHalfHeight;
+        }
     }
 }
 
@@ -128,7 +141,7 @@ void InputPlayer() {
 
         else if (IsKeyDown(KEY_LEFT)) p.rotation -= ROTATION_SPEED;
 
-        if (IsKeyDown(KEY_SPACE)) {
+        if (IsKeyReleased(KEY_SPACE)) {
             Shoot();
         }
 
@@ -143,7 +156,7 @@ inline Vector2 GetPlayerDir() {
 void DrawBullet() {
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (p.bullets[i].active) {
-            DrawCircleV(p.bullets[i].position, 3, BLUE);
+            DrawCircleV(p.bullets[i].position, BULLET_RADIUS, BLUE);
         }
     }
 }
@@ -155,10 +168,11 @@ void UpdateBullet() {
         Bullet *bullet = &p.bullets[i];
 
         if (bullet->active) {
-
-            if (CheckCollisionCircles(bullet->position, 3, meteor.position, meteor.radius)) {
-                meteor.position = (Vector2) {-5000, -5000};
-                bullet->active = false;
+            for (int j = 0; j < BIG_METEORS; ++j) {
+                if (CheckCollisionCircles(bullet->position, BULLET_RADIUS, meteor[j].position, meteor[j].radius)) {
+                    meteor[j].position = (Vector2) {-100, -100};
+                    bullet->active = false;
+                }
             }
             // Atualiza a posição da bala com base na velocidade e direção
             bullet->position.x += BULLET_SPEED * bullet->direction.x;
@@ -174,20 +188,26 @@ void UpdateBullet() {
 }
 
 void InitMeteor() {
-    meteor.position = (Vector2) {0, 0};
-    meteor.radius = 50;
-    meteor.direction = (Vector2) {(float)GetRandomValue(1, 5), (float)GetRandomValue(1, 5)};
+    for (int i = 0; i < BIG_METEORS; ++i) {
+        meteor[i].position = (Vector2) {0, 0};
+        meteor[i].radius = 50;
+        meteor[i].direction = (Vector2) {(float)GetRandomValue(1, 5), (float)GetRandomValue(1, 5)};
+    }
 }
 
 void DrawMeteor() {
-    DrawCircleV(meteor.position, meteor.radius, BROWN);
+    for (int i = 0; i < BIG_METEORS; ++i) {
+        DrawCircleV(meteor[i].position, meteor[i].radius, BROWN);
+    }
 }
 
 void UpdateMeteor() {
     if (!gameStarted) return;
 
-    meteor.position.x += METEOR_SPEED * meteor.direction.x;
-    meteor.position.y += METEOR_SPEED * meteor.direction.y;
+    for (int i = 0; i < BIG_METEORS; ++i) {
+        meteor[i].position.x += METEOR_SPEED * meteor[i].direction.x;
+        meteor[i].position.y += METEOR_SPEED * meteor[i].direction.y;
+    }
 }
 
 void DrawGamePause() {

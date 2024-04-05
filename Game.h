@@ -9,8 +9,12 @@
 
 #define PLAYER_SPEED 3.0f
 #define ROTATION_SPEED 3.0f
-#define BULLET_SPEED 9.f
+
+#define BULLET_SPEED 9.0f
 #define MAX_BULLETS 3
+#define BULLET_RADIUS 3
+
+#define BIG_METEORS 5
 #define METEOR_SPEED 0.5f
 
 #define SCREEN_HEIGHT 800
@@ -29,12 +33,13 @@ typedef struct {
 typedef struct {
     Vector2 v1, v2, v3, position;
     float rotation;
-    Bullet bullets[3];
+    Bullet bullets[MAX_BULLETS];
 }Player;
 
 void SetupGame();
 void DrawGamePause();
 
+//bool CheckCollisionMeteor();
 Vector2 GetPlayerDir();
 void InitPlayer();
 void DrawPlayer();
