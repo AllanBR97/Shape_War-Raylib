@@ -10,6 +10,33 @@ int indexBullet;
 bool gameStarted;
 Player p;
 
+// Main game loop
+void Run() {
+    SetupGame();
+    while (!WindowShouldClose()) {
+        Update();
+        Draw();
+    }
+}
+
+void Update() {
+    UpdateBullet();
+    UpdateMeteor();
+    RotatePlayer();
+    ScreenWrap();
+    InputPlayer();
+}
+
+void Draw() {
+    BeginDrawing();
+    ClearBackground(BLACK);
+    DrawPlayer();
+    DrawBullet();
+    DrawMeteor();
+    DrawGamePause();
+    EndDrawing();
+}
+
 void SetupGame() {
     indexBullet = 0;
     gameStarted = true;

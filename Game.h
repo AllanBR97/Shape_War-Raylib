@@ -12,6 +12,9 @@
 
 extern bool gameStarted;
 
+void Run();
+void Update();
+void Draw();
 void SetupGame();
 void DrawGamePause();
 
