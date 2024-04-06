@@ -14,16 +14,8 @@
 #define MAX_BULLETS 3
 #define BULLET_RADIUS 3
 
-#define BIG_METEORS 5
-#define METEOR_SPEED 0.5f
-
 #define SCREEN_HEIGHT 800
 #define SCREEN_WIDTH 800
-
-typedef struct {
-    Vector2 position, direction;
-    float radius;
-}Meteor;
 
 typedef struct {
     Vector2 position, direction;
@@ -35,6 +27,11 @@ typedef struct {
     float rotation;
     Bullet bullets[MAX_BULLETS];
 }Player;
+
+extern int indexBullet;
+
+extern bool gameStarted;
+extern Player p;
 
 void SetupGame();
 void DrawGamePause();
@@ -50,8 +47,4 @@ void Shoot();
 
 void UpdateBullet();
 void DrawBullet();
-
-void InitMeteor();
-void DrawMeteor();
-void UpdateMeteor();
 #endif //SHAPE_WAR_GAME_H
