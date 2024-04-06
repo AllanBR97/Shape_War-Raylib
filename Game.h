@@ -18,4 +18,7 @@ void Draw();
 void SetupGame();
 void DrawGamePause();
 
+void ScreenWrap();
+void HandleInput();
+void Shoot();
 #endif //SHAPE_WAR_GAME_H

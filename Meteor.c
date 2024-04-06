@@ -1,7 +1,6 @@
 //
 // Created by allan on 06/04/24.
 //
-#include "Game.h"
 #include "Meteor.h"
 
 Meteor meteor[BIG_METEORS];

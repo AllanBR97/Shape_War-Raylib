@@ -1,13 +1,11 @@
 #include "Game.h"
 
-int main(void) {
-    // Initialization
+int main() {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Shape War");
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+    SetTargetFPS(60);
 
     Run();
 
-    // De-Initialization
-    CloseWindow();        // Close window and OpenGL context
+    CloseWindow();
     return 0;
 }

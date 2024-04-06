@@ -21,9 +21,6 @@ extern Player p;
 Vector2 GetPlayerDir();
 void InitPlayer();
 void DrawPlayer();
-void ScreenWrap();
-void InputPlayer();
-void RotatePlayer();
-void Shoot();
+void UpdatePlayer();
 
 #endif //SHAPE_WAR_PLAYER_H
