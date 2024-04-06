@@ -22,28 +22,12 @@ typedef struct {
     bool active;
 }Bullet;
 
-typedef struct {
-    Vector2 v1, v2, v3, position;
-    float rotation;
-    Bullet bullets[MAX_BULLETS];
-}Player;
-
 extern int indexBullet;
 
 extern bool gameStarted;
-extern Player p;
 
 void SetupGame();
 void DrawGamePause();
-
-//bool CheckCollisionMeteor();
-Vector2 GetPlayerDir();
-void InitPlayer();
-void DrawPlayer();
-void ScreenWrap();
-void InputPlayer();
-void RotatePlayer();
-void Shoot();
 
 void UpdateBullet();
 void DrawBullet();

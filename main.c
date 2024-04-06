@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Meteor.h"
+#include "Player.h"
 
 void update() {
     UpdateBullet();
