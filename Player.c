@@ -3,6 +3,7 @@
 //
 #include "Meteor.h"
 #include "Player.h"
+#include "Bullet.h"
 
 void InitPlayer() {
     // Setup player
