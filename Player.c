@@ -46,6 +46,9 @@ void UpdatePlayer() {
     p.v3 = v3;
 
     if (gameStarted) {
+        if (CheckCollision()) {
+            p.position = (Vector2) {-100, - 100};
+        }
         p.position.x += GetPlayerDir().x * PLAYER_SPEED;
         p.position.y += GetPlayerDir().y * PLAYER_SPEED;
     }
@@ -53,6 +56,28 @@ void UpdatePlayer() {
 
 void DrawPlayer() {
     DrawTriangleLines(p.v1, p.v2, p.v3, YELLOW);
+}
+
+bool CheckCollision() {
+    for (int i = 0; i < BIG_METEORS; ++i) {
+        float cx1 = p.v1.x - meteor[i].position.x;
+        float cx2 = p.v2.x - meteor[i].position.x;
+        float cx3 = p.v3.x - meteor[i].position.x;
+        float cy1 = p.v1.y - meteor[i].position.y;
+        float cy2 = p.v2.y - meteor[i].position.y;
+        float cy3 = p.v3.y - meteor[i].position.y;
+
+        if (sqrtf(cx1*cx1 + cy1*cy1) <= meteor[i].radius) {
+            return true;
+        }
+        if (sqrtf(cx2*cx2 + cy2*cy2) <= meteor[i].radius) {
+            return true;
+        }
+        if (sqrtf(cx3*cx3 + cy3*cy3) <= meteor[i].radius) {
+            return true;
+        }
+    }
+    return false;
 }
 
 inline Vector2 GetPlayerDir() {

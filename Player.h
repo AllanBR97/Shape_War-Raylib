@@ -19,6 +19,8 @@ typedef struct {
 extern Player p;
 
 Vector2 GetPlayerDir();
+bool CheckCollision();
+
 void InitPlayer();
 void DrawPlayer();
 void UpdatePlayer();
