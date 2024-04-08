@@ -58,22 +58,23 @@ void DrawPlayer() {
     DrawTriangleLines(p.v1, p.v2, p.v3, YELLOW);
 }
 
+// Check if a point is in a circle
+bool PointInsideCircle(Vector2 vector2, float cx, float cy, float radius) {
+    float dx = vector2.x - cx;
+    float dy = vector2.y - cy;
+    return (dx*dx + dy*dy) <= (radius * radius);
+}
+
 bool CheckCollision() {
     for (int i = 0; i < BIG_METEORS; ++i) {
-        float cx1 = p.v1.x - meteor[i].position.x;
-        float cx2 = p.v2.x - meteor[i].position.x;
-        float cx3 = p.v3.x - meteor[i].position.x;
-        float cy1 = p.v1.y - meteor[i].position.y;
-        float cy2 = p.v2.y - meteor[i].position.y;
-        float cy3 = p.v3.y - meteor[i].position.y;
+        float radius = meteor[i].radius;
+        float cx = meteor[i].position.x;
+        float cy = meteor[i].position.y;
 
-        if (sqrtf(cx1*cx1 + cy1*cy1) <= meteor[i].radius) {
-            return true;
-        }
-        if (sqrtf(cx2*cx2 + cy2*cy2) <= meteor[i].radius) {
-            return true;
-        }
-        if (sqrtf(cx3*cx3 + cy3*cy3) <= meteor[i].radius) {
+        // Check if a vertex is in a radius
+        if (PointInsideCircle(p.v1, cx, cy, radius) ||
+            PointInsideCircle(p.v2, cx, cy, radius) ||
+            PointInsideCircle(p.v3, cx, cy, radius)) {
             return true;
         }
     }

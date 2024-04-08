@@ -19,6 +19,7 @@ typedef struct {
 extern Player p;
 
 Vector2 GetPlayerDir();
+bool PointInsideCircle(Vector2, float, float, float);
 bool CheckCollision();
 
 void InitPlayer();
