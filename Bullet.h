@@ -6,7 +6,7 @@
 #ifndef SHAPE_WAR_BULLET_H
 #define SHAPE_WAR_BULLET_H
 
-#define BULLET_SPEED 9.0f
+#define BULLET_SPEED 10.f
 #define MAX_BULLETS 3
 #define BULLET_RADIUS 3
 

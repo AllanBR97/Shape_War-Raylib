@@ -7,10 +7,10 @@
 #define SHAPE_WAR_METEOR_H
 
 #define BIG_METEORS 5
-#define METEOR_SPEED 0.5f
+#define METEOR_SPEED 2
 
 typedef struct {
-    Vector2 position, direction;
+    Vector2 position, speed;
     float radius;
 }Meteor;
 

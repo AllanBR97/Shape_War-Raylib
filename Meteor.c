@@ -7,9 +7,17 @@ Meteor meteor[BIG_METEORS];
 
 void InitMeteor() {
     for (int i = 0; i < BIG_METEORS; ++i) {
+        int spdX = GetRandomValue(-METEOR_SPEED, METEOR_SPEED);
+        int spdY = GetRandomValue(-METEOR_SPEED, METEOR_SPEED);
+
+        while (spdX == 0 && spdY == 0) {
+            spdX = GetRandomValue(-METEOR_SPEED, METEOR_SPEED);
+            spdY = GetRandomValue(-METEOR_SPEED, METEOR_SPEED);
+        }
+
         meteor[i].position = (Vector2) {0, 0};
         meteor[i].radius = 50;
-        meteor[i].direction = (Vector2) {(float)GetRandomValue(1, 5), (float)GetRandomValue(1, 5)};
+        meteor[i].speed = (Vector2) {spdX, spdY};
     }
 }
 
@@ -23,7 +31,7 @@ void UpdateMeteor() {
     if (!gameStarted) return;
 
     for (int i = 0; i < BIG_METEORS; ++i) {
-        meteor[i].position.x += METEOR_SPEED * meteor[i].direction.x;
-        meteor[i].position.y += METEOR_SPEED * meteor[i].direction.y;
+        meteor[i].position.x += METEOR_SPEED * meteor[i].speed.x;
+        meteor[i].position.y += METEOR_SPEED * meteor[i].speed.y;
     }
 }
