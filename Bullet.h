@@ -2,6 +2,7 @@
 // Created by allan on 06/04/24.
 //
 #include "Game.h"
+#include "Meteor.h"
 
 #ifndef SHAPE_WAR_BULLET_H
 #define SHAPE_WAR_BULLET_H
@@ -16,6 +17,7 @@ typedef struct {
 }Bullet;
 
 extern int indexBullet;
+bool CheckCollisionMeteor(Bullet*, Meteor*);
 
 void UpdateBullet();
 void DrawBullet();

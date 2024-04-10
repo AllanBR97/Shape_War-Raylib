@@ -21,8 +21,9 @@ void UpdateBullet() {
         Bullet *bullet = &p.bullets[i];
 
         if (bullet->active) {
+            // Check collision
             for (int j = 0; j < BIG_METEORS; ++j) {
-                if (CheckCollisionCircles(bullet->position, BULLET_RADIUS, meteor[j].position, meteor[j].radius)) {
+                if (CheckCollisionMeteor(bullet, &meteor[j])) {
                     meteor[j].position = (Vector2) {-100, -100};
                     bullet->active = false;
                 }
@@ -38,4 +39,11 @@ void UpdateBullet() {
             }
         }
     }
+}
+
+bool CheckCollisionMeteor(Bullet* bullet, Meteor* meteor) {
+    if (CheckCollisionCircles(bullet->position, BULLET_RADIUS, meteor->position, meteor->radius)) {
+        return true;
+    }
+    return false;
 }

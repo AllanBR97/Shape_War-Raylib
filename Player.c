@@ -47,7 +47,7 @@ void UpdatePlayer() {
 
     if (gameStarted) {
         if (CheckCollision()) {
-            p.position = (Vector2) {-100, - 100};
+            p.position = (Vector2) {400, 400};
         }
         p.position.x += GetPlayerDir().x * PLAYER_SPEED;
         p.position.y += GetPlayerDir().y * PLAYER_SPEED;
