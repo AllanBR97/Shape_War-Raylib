@@ -23,16 +23,17 @@ void UpdateBullet() {
         if (bullet->active) {
             // Check collision
             for (int j = 0; j < BIG_METEORS; ++j) {
-                if (CheckCollisionMeteor(bullet, &meteor[j])) {
-                    meteor[j].position = (Vector2) {-100, -100};
+                if (CheckCollisionMeteor(bullet, &meteor[j]) && meteor[j].active) {
+                    SpawnMeteor(j);
+                    meteor[j].active = false;
                     bullet->active = false;
                 }
             }
-            // Atualiza a posição da bala com base na velocidade e direção
+            // Update bullets
             bullet->position.x += BULLET_SPEED * bullet->direction.x;
             bullet->position.y += BULLET_SPEED * bullet->direction.y;
 
-            // Verifica se a bala saiu da tela, se sim, desativa
+            // Check if bullets have left the screen
             if (bullet->position.x > SCREEN_WIDTH || bullet->position.y > SCREEN_HEIGHT ||
                 bullet->position.x < 0 || bullet->position.y < 0) {
                 bullet->active = false;
@@ -41,8 +42,8 @@ void UpdateBullet() {
     }
 }
 
-bool CheckCollisionMeteor(Bullet* bullet, Meteor* meteor) {
-    if (CheckCollisionCircles(bullet->position, BULLET_RADIUS, meteor->position, meteor->radius)) {
+bool CheckCollisionMeteor(Bullet* bullet, Meteor* m) {
+    if (CheckCollisionCircles(bullet->position, BULLET_RADIUS, m->position, m->radius)) {
         return true;
     }
     return false;

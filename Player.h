@@ -20,7 +20,7 @@ extern Player p;
 
 Vector2 GetPlayerDir();
 bool PointInsideCircle(Vector2, float, float, float);
-bool CheckCollision();
+bool CheckCollisionMeteors();
 
 void InitPlayer();
 void DrawPlayer();

@@ -22,7 +22,7 @@ void Run() {
 void Update() {
     HandleInput();
     UpdateBullet();
-    UpdateMeteor();
+    UpdateMeteors();
     UpdatePlayer();
     ScreenWrap();
 }
@@ -32,7 +32,7 @@ void Draw() {
     ClearBackground(BLACK);
     DrawPlayer();
     DrawBullet();
-    DrawMeteor();
+    DrawMeteors();
     DrawGamePause();
     EndDrawing();
 }
@@ -41,7 +41,7 @@ void SetupGame() {
     indexBullet = 0;
     gameStarted = true;
     InitPlayer();
-    InitMeteor();
+    InitMeteors();
 }
 
 void DrawGamePause() {

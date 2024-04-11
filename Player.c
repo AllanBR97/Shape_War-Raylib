@@ -46,7 +46,7 @@ void UpdatePlayer() {
     p.v3 = v3;
 
     if (gameStarted) {
-        if (CheckCollision()) {
+        if (CheckCollisionMeteors()) {
             p.position = (Vector2) {400, 400};
         }
         p.position.x += GetPlayerDir().x * PLAYER_SPEED;
@@ -65,16 +65,16 @@ bool PointInsideCircle(Vector2 vector2, float cx, float cy, float radius) {
     return (dx*dx + dy*dy) <= (radius * radius);
 }
 
-bool CheckCollision() {
+bool CheckCollisionMeteors() {
     for (int i = 0; i < BIG_METEORS; ++i) {
         float radius = meteor[i].radius;
         float cx = meteor[i].position.x;
         float cy = meteor[i].position.y;
 
-        // Check if a vertex is in a radius
-        if (PointInsideCircle(p.v1, cx, cy, radius) ||
-            PointInsideCircle(p.v2, cx, cy, radius) ||
-            PointInsideCircle(p.v3, cx, cy, radius)) {
+        // Check if a vertex is in a radius and if meteor is active
+        if (meteor[i].active && (PointInsideCircle(p.v1, cx, cy, radius) ||
+                                 PointInsideCircle(p.v2, cx, cy, radius) ||
+                                 PointInsideCircle(p.v3, cx, cy, radius))) {
             return true;
         }
     }
